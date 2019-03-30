@@ -100,7 +100,7 @@
     
    async function delete_service(id) {
     try {
-        let service_deleted = await axios.delete('http://localhost:3141/endpoints/<%=clientid%>/services/' + id,
+        let service_deleted = await axios.delete('https://api.driplet.cf/endpoints/<%=clientid%>/services/' + id,
         {
                     "headers": {
                         authorization: "<%=token%>"
@@ -137,7 +137,7 @@
         }
 
         try {
-            let service_created = await axios.post('http://localhost:3141/endpoints/<%=clientid%>/services',
+            let service_created = await axios.post('https://api.driplet.cf/endpoints/<%=clientid%>/services',
                 data = {
                     "name": name,
                     "start_command": start,

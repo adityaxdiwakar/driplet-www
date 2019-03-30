@@ -5,7 +5,6 @@ const app = express()
 const port = 31415
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
-app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
 
 const logRequestStart = (req, res, next) => {
@@ -32,7 +31,7 @@ app.get('/', async (req, res) => {
             res.redirect('/')
         }
     }
-    catch (e) {}
+    catch (e) { }
 })
 
 app.get('/login', (req, res) => {

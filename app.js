@@ -18,7 +18,7 @@ app.get('/', async (req, res) => {
         if (req.cookies.token == undefined || req.cookies.userid == undefined || req.cookies.token == "" || req.cookies.userid == "") {
             res.render("index.ejs")
         }
-        const authorization = await axios.get('http://localhost:3141/endpoints/accounts/' + req.cookies.userid + '/verify',
+        const authorization = await axios.get('https://api.driplet.cf/endpoints/accounts/' + req.cookies.userid + '/verify',
             {
                 "headers": {
                     authorization: req.cookies.token
@@ -47,7 +47,7 @@ app.get('/:clientid/services', async (req, res) => {
         else if (req.cookies.token == undefined) {
             res.redirect('/login')
         }
-        const services = await axios.get('http://localhost:3141/endpoints/' + clientid + '/services',
+        const services = await axios.get('https://api.driplet.cf/endpoints/' + clientid + '/services',
             {
                 "headers": {
                     'authorization': req.cookies.token
@@ -86,14 +86,14 @@ app.get('/:clientid/services/:serviceid', async (req, res) => {
     }
     else {
         try {
-            const request_promise = axios('http://localhost:3141/endpoints/' + clientid + '/services/' + serviceid,
+            const request_promise = axios('https://api.driplet.cf/endpoints/' + clientid + '/services/' + serviceid,
                 {
                     "headers": {
                         authorization: req.cookies.token
                     }
                 }
             )
-            const all_services_promise = axios('http://localhost:3141/endpoints/' + clientid + '/services',
+            const all_services_promise = axios('https://api.driplet.cf/endpoints/' + clientid + '/services',
                 {
                     "headers": {
                         authorization: req.cookies.token

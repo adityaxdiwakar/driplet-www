@@ -107,8 +107,7 @@
             return
         }
         axios.post('https://api.driplet.cf/endpoints/login', {
-            username: ushttps://api.driplet.cf
-            https://api.driplet.cf
+            username: username,
             password: password
         })
             .then((response) => {
@@ -130,7 +129,7 @@
             alert("Please fill out the fields entirely.")
             return
         }
-        axios.post('https://api.driplet.cf/endpoints/register', {
+        axios.post('http://localhost:3141/endpoints/register', {
             email: email,
             username: username,
             password: password

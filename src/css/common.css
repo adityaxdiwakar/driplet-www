@@ -1,0 +1,388 @@
+/*
+
+Colour 1: #4facfe
+Colour 2: #00f2fe
+
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+a {
+    color: inherit;
+}
+
+body, html {
+    width: 100vw;
+    min-height: 100vh;
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(#eee, #e5e5e5);
+}
+
+#root, #app {
+    min-height: 100vh;
+}
+
+.header::before {
+    position: absolute;
+    top: 100%;
+    left: 0;
+
+    content: "";
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(135deg, #00f2fe, #4facfe);
+}
+
+.header {
+    height: 56px;
+    background-color: #222;
+    color: #fff;
+    width: 100%;
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    padding-right: 16px;
+}
+
+.header img {
+    height: 56px;
+}
+
+.header .brand {
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+/* WIDGETS */
+.btn span {
+    font-size: inherit;
+    position: relative;
+}
+
+.btn {
+    background-color: #4facfe;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    padding: 8px 16px;
+    color: #fff;
+    display: inline-block;
+    width: auto;
+    float: right;
+    font-size: .9em;
+    margin-left: 12px;
+}
+
+.btn-wide {
+    padding: 8px 48px;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid #ddd;
+    padding: 7px 14px;
+    color: #555;
+}
+
+.btn::before {
+    content: "";
+    width: 0;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 100%;
+    padding-top: 0;
+    display: block;
+    background-color: #00f2fe;
+    transition: width 0.2s ease-out, padding-top 0.2s ease-out;
+}
+
+.btn-secondary::before {
+    background-color: #ddd;
+}
+
+.btn-red {
+    background-color: #ff4141;
+}
+
+.btn-red::before {
+    background-color: #c83548;
+}
+
+.btn-orange {
+    background-color: #ff8b3c;
+}
+
+.btn-orange::before {
+    background-color: #d77531;
+}
+
+.btn-green {
+    background-color: #59bf6c;
+}
+
+.btn-green::before {
+    background-color: #489653;
+}
+
+.btn-locked {
+    background-color: #ccc;
+    color: #555;
+}
+
+.btn-locked::before {
+    background-color: #bbb;
+}
+
+.btn:not(.btn-locked):hover:before {
+    width: 240%;
+    padding-top: 240%;
+    top: 100%;
+    left: 0;
+    transition: width 0.2s ease-in, padding-top 0.2s ease-in;
+}
+
+.hr {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    margin-top: 4px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+label {
+    display: block;
+    font-size: .7em;
+    text-transform: uppercase;
+    color: #999;
+}
+
+input {
+    border: none;
+    border-bottom: 1px solid #e0e1e7;
+    padding: 4px 0;
+    background-color: #fff;
+    font-size: .9em;
+    outline: none;
+}
+
+::placeholder {
+    color: #bbb;
+}
+
+.input-wrap {
+    position: relative;
+    margin: 8px 0 24px;
+}
+
+.input-wrap::after {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 0;
+    background-color: #aaabaf;
+    position: absolute;
+    right: 0;
+    margin-top: -1px;
+    top: 100%;
+    transition: width 200ms ease-out;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px white inset;
+}
+
+:focus {
+    outline-color: transparent;
+    outline-style: none;
+}
+
+.input-wrap:focus-within::after {
+    width: 100%;
+}
+
+/* DIALOGS */
+.overlay-darken {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlay-dg {
+    min-width: 450px;
+    padding: 32px 32px 16px;
+
+    background-color: #222;
+    color: #fff;
+    position: relative;
+}
+
+@media only screen and (max-width: 800px) {
+    .dash-wrap {
+        margin: 16px 8px;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .overlay-dg {
+        width: 100vw;
+        min-width: auto;
+    }
+
+    .nav-add-text {
+        display: none;
+    }
+}
+
+.overlay-dg:after {
+    content: "";
+    display: block;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+
+    animation: 1s ease-out fadeIn infinite alternate;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: .2;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.overlay-btn {
+    margin-bottom: 0;
+    margin-top: 16px;
+}
+
+.overlay-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.overlay-body {
+    white-space: pre-line;
+    line-height: 1.4;
+}
+
+.create-head {
+    margin: -32px -32px 16px;
+    padding: 32px 32px 24px;
+    background-color: #222;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.create-overlay {
+    background-color: #fff;
+    color: #111;
+}
+
+.create-overlay .hr {
+    margin-bottom: 16px;
+    opacity: .6;
+}
+
+.cols {
+    display: flex;
+}
+
+.cols>* {
+    flex-grow: 1;
+    margin-right: 48px;
+    min-width: 400px;
+}
+
+.cols>*:last-child {
+    margin-right: 0;
+}
+
+@media only screen and (max-width: 900px) {
+    .cols {
+        display: block;
+    }
+    .cols>* {
+        margin-right: 0;
+        width: 100%;
+    }
+
+    .btn-wide {
+        padding: 8px 16px;
+    }
+}
+
+input {
+    width: 100%;
+}
+
+.nav-add {
+    margin-right: 32px;
+    cursor: pointer;
+    font-size: 36px;
+    user-select: none;
+    display: inline;
+    float: right;
+    line-height: 48px;
+}
+
+.nav-add-text {
+    cursor: pointer;
+    font-size: .9em;
+    margin-right: 8px;
+    float: left;
+    line-height: 48px;
+}
+
+.loading-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 56px);
+    flex-grow: 1;
+}
+
+.loading-body {
+    font-size: 3em;
+    font-weight: 600;
+    color: #777;
+}
+
+/* GENERIC */
+.fr {
+    display: flex;
+}
+
+.fg {
+    flex-grow: 1;
+}

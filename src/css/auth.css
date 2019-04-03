@@ -1,0 +1,31 @@
+.auth-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: calc(100vh - 56px);
+}
+
+.auth-modal {
+    background-color: #fff;
+    box-shadow: 10px 10px 50px -10px #777;
+    display: flex;
+}
+
+.auth-modal-body {
+    padding: 64px;
+}
+
+.auth-modal-body input {
+    width: 400px;
+}
+
+@media only screen and (max-width: 450px) {
+    .auth-modal-body input {
+        width: auto;
+    }
+
+    .auth-modal {
+        width: 100vw;
+    }
+}

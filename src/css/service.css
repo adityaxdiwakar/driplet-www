@@ -1,0 +1,76 @@
+.service-wrap {
+    display: flex;
+    min-height: calc(100vh - 56px);
+}
+
+.service-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background-color: #222;
+    color: #fff;
+    padding: 16px 0;
+}
+
+@media only screen and (max-width: 800px) {
+    .service-sidebar {
+        display: none;
+    }
+}
+
+.service-sb-head {
+    font-weight: 600;
+    padding: 8px 8px 4px;
+}
+
+.service-sidebar .hr {
+    margin-bottom: 4px;
+}
+
+.service-sb-link {
+    padding: 8px 16px;
+    line-height: 1.5;
+    cursor: pointer;
+}
+.service-sb-link:hover {
+    background-color: #333;
+}
+
+.service-body {
+    flex-grow: 1;
+    padding: 16px 32px;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 56px);
+}
+
+.service-console {
+    margin: 8px 0;
+    padding: 16px 24px;
+    font-family: monospace;
+    color: #eee;
+    background: #111;
+
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 1.25;
+    overflow-y: auto;
+    position: relative;
+
+    flex-grow: 1;
+}
+
+.service-console-loading {
+    position: absolute;
+    opacity: .5;
+    transition: opacity 300ms;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    user-select: none;
+}
+
+.service-name {
+    font-size: 1.5em;
+    margin-bottom: 4px;
+}

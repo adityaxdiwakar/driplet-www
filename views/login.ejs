@@ -48,7 +48,14 @@
                             placeholder="Password" aria-label="Username" aria-describedby="addon-wrapping" required>
                     </div>
                 </form>
-                <button class="btn btn-dark btn-block" id="login-button" type="submit" onclick="login()">Login</button>
+                <div class="row">
+                    <div class="col-md-9">
+                        <button class="btn btn-dark btn-block" id="login-button" type="submit" onclick="login()">Login</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-dark btn-block" id="login-button" type="submit" onclick="reset()">Forgot?</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col">
@@ -119,6 +126,10 @@
                 console.log(error);
                 alert("Somethng went wrong, try again.")
             });
+    }
+
+    function reset() {
+        
     }
 
     function register() {

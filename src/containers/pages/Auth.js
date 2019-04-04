@@ -23,6 +23,7 @@ export class Reset extends Component {
             redirect: false,
 
             key: null,
+            client_id: null,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -30,7 +31,8 @@ export class Reset extends Component {
 
     componentWillMount() {
         const values = queryString.parse(this.props.location.search);
-        this.setState({key: values.key});
+        console.warn(values);
+        this.setState({key: values[''], client_id: values.user});
     }
 
     handleChange(event) {
@@ -49,6 +51,7 @@ export class Reset extends Component {
             api.reset({
                 key: this.state.key,
                 password: this.state.password,
+                client_id: this.state.client_id,
             }, (data) => {
                 this.setState({
                     redirect: true
@@ -63,32 +66,34 @@ export class Reset extends Component {
     }
 
     render() {
-        if (!this.state.key || this.state.redirect) return <Redirect to={"/login"}/>;
+        if (!this.state.key || !this.state.client_id || this.state.redirect) return <Redirect to={"/login"}/>;
 
         let valid = this.valid();
         return (
             <AppPage><APIContext.Consumer>{api =>
                 <div className={"auth-wrap"}>
                     <div className={"auth-modal"}>
-                        <div className={"auth-modal-body"}>
+                        <form className={"auth-modal-body"}>
                             <label>Password</label>
                             <div className={"input-wrap"}><input name={"password"} type={"password"}
                                                                  value={this.state.password}
+                                                                 autoComplete={"newpassword"}
                                                                  onChange={this.handleChange} placeholder={"Password"}
                                                                  disabled={this.state.lock}/></div>
 
                             <label>Repeat Password</label>
                             <div className={"input-wrap"}><input name={"password2"} type={"password"}
                                                                  value={this.state.password2}
+                                                                 autoComplete={"newpassword"}
                                                                  onChange={this.handleChange}
                                                                  placeholder={"Repeat Password"}
                                                                  disabled={this.state.lock}/></div>
 
-                            <div style={{color: "red"}}>{this.state.error}</div>
+                            <div className={"auth-error"}>{this.state.error}</div>
 
                             <Button locked={this.state.lock || (!valid)}
                                     click={this.reset(api)} val={"Reset Password"}/>
-                        </div>
+                        </form>
                     </div>
                 </div>
             }</APIContext.Consumer></AppPage>
@@ -108,6 +113,7 @@ export class Login extends Component {
             email: "",
 
             register: false,
+            forgot: false,
             lock: false,
             error: "",
         };
@@ -118,6 +124,10 @@ export class Login extends Component {
     handleChange(event) {
         this.setState({[event.target.name]: event.target.value});
         this.validate();
+    }
+
+    showForgot = () => {
+        this.setState({forgot: true});
     }
 
     validate() {
@@ -137,13 +147,13 @@ export class Login extends Component {
 
             return this.state.username.length && this.state.password.length && this.state.email.length;
         }
-        return this.state.username.length && this.state.password.length;
+        return this.state.username.length && (this.state.forgot || this.state.password.length);
     }
 
     login(api) {
         return () => {
-            if (this.state.register) {
-                return this.setState({register: false});
+            if (this.state.register || this.state.forgot) {
+                return this.setState({register: false, forgot: false});
             }
 
             this.setState({lock: true});
@@ -182,12 +192,25 @@ export class Login extends Component {
         }
     }
 
-    forgot(app) {
+    forgot(app, api) {
         return () => {
-            let message = "If this account exists, you will have been sent an email to the address linked to you account.\n"
-            message += "Please follow the instructions in there to continue the password reset.\n\n";
-            message += "(Make sure to check your spam folder)";
-            app.showDialog({title: "Password reset", body: message, dismissible: true});
+            if (!this.state.username) {
+                let message = "Please enter your username first.";
+                return app.showDialog({title: "Password reset", body: message, dismissible: true});
+            }
+
+            api.request_reset({
+                username: this.state.username,
+            }, (data) => {
+                let message = "If this account exists, you will have been sent an email to the address linked to you account.\n"
+                message += "Please follow the instructions in there to continue the password reset.\n\n";
+                message += "(Make sure to check your spam folder)";
+                app.showDialog({title: "Password reset", body: message, dismissible: true});
+            }, (data) => {
+                let message = "Something went wrong requesting a password reset:\n";
+                message += data.message;
+                app.showDialog({title: "Password reset", body: message, dismissible: true});
+            });
         }
     }
 
@@ -197,45 +220,69 @@ export class Login extends Component {
             <AppPage><APIContext.Consumer>{api =>
                 <div className={"auth-wrap"}>
                     <div className={"auth-modal"}>
-                        <div className={"auth-modal-body"}>
-                            <label>Username</label>
-                            <div className={"input-wrap"}><input name={"username"} type={"text"}
-                                                                 value={this.state.username}
-                                                                 onChange={this.handleChange} placeholder={"Username"}
-                                                                 disabled={this.state.lock}/></div>
-                            <label>Password</label>
-                            <div className={"input-wrap"}><input name={"password"} type={"password"}
-                                                                 value={this.state.password}
-                                                                 onChange={this.handleChange} placeholder={"Password"}
-                                                                 disabled={this.state.lock}/></div>
-
-                            {this.state.register ? <>
-                                <label>Repeat Password</label>
-                                <div className={"input-wrap"}><input name={"password2"} type={"password"}
-                                                                     value={this.state.password2}
+                        <form className={"auth-modal-body"}>
+                            {this.state.forgot ? <>
+                                <label>Username or Email</label>
+                                <div className={"input-wrap"}><input name={"username"} type={"text"}
+                                                                     value={this.state.username}
+                                                                     autoComplete={"username"}
                                                                      onChange={this.handleChange}
-                                                                     placeholder={"Repeat Password"}
-                                                                     disabled={this.state.lock}/></div>
-                                <label>Email</label>
-                                <div className={"input-wrap"}><input name={"email"} type={"email"}
-                                                                     value={this.state.email}
-                                                                     onChange={this.handleChange} placeholder={"Email"}
+                                                                     placeholder={"Username or Email"}
                                                                      disabled={this.state.lock}/></div>
                             </> : <>
-                                <AppContext.Consumer>{app => (
-                                <div className={"auth-forgot"} onClick={this.forgot(app)}>I forgot my password</div>
-                                )}</AppContext.Consumer>
+                                <label>Username</label>
+                                <div className={"input-wrap"}><input name={"username"} type={"text"}
+                                                                     value={this.state.username}
+                                                                     autoComplete={"username"}
+                                                                     onChange={this.handleChange} placeholder={"Username"}
+                                                                     disabled={this.state.lock}/></div>
+                                <label>Password</label>
+                                <div className={"input-wrap"}><input name={"password"} type={"password"}
+                                                                     value={this.state.password}
+                                                                     autoComplete={this.state.register ?
+                                                                        "newpassword" : "current-password"}
+                                                                     onChange={this.handleChange} placeholder={"Password"}
+                                                                     disabled={this.state.lock}/></div>
+
+                                {this.state.register ? <>
+                                    <label>Repeat Password</label>
+                                    <div className={"input-wrap"}><input name={"password2"} type={"password"}
+                                                                         value={this.state.password2}
+                                                                         autoComplete={"newpassword"}
+                                                                         onChange={this.handleChange}
+                                                                         placeholder={"Repeat Password"}
+                                                                         disabled={this.state.lock}/></div>
+                                    <label>Email</label>
+                                    <div className={"input-wrap"}><input name={"email"} type={"email"}
+                                                                         value={this.state.email}
+                                                                         onChange={this.handleChange} placeholder={"Email"}
+                                                                         disabled={this.state.lock}/></div>
+                                </> : null}
                             </>}
 
-                            <div style={{color: "red"}}>{this.state.error}</div>
+                            <div className={"auth-error"}>{this.state.error}</div>
 
-                            <Button secondary={!this.state.register}
-                                    locked={this.state.lock || (!valid && this.state.register)}
-                                    click={this.register(api)} val={"Register"}/>
-                            <Button secondary={this.state.register}
-                                    locked={this.state.lock || (!valid && !this.state.register)}
-                                    click={this.login(api)} val={"Login"}/>
-                        </div>
+                            {(!this.state.forgot && !this.state.register) ?
+                                <div className={"auth-forgot"} onClick={this.showForgot}>I forgot my password</div>
+                                : null}
+
+                            {this.state.forgot ? <>
+                                <Button secondary locked={this.state.lock}
+                                        click={this.login(api)} val={"Login"}/>
+
+                                <AppContext.Consumer>{app => (
+                                    <Button locked={this.state.lock || !valid}
+                                            click={this.forgot(app, api)} val={"Request Reset"}/>
+                                )}</AppContext.Consumer>
+                            </> : <>
+                                <Button secondary={!this.state.register}
+                                        locked={this.state.lock || (!valid && this.state.register)}
+                                        click={this.register(api)} val={"Register"}/>
+                                <Button secondary={this.state.register}
+                                        locked={this.state.lock || (!valid && !this.state.register)}
+                                        click={this.login(api)} val={"Login"}/>
+                            </>}
+                        </form>
                     </div>
                 </div>
             }</APIContext.Consumer></AppPage>

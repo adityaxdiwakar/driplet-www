@@ -20,10 +20,14 @@ a {
 }
 
 body, html {
-    width: 100vw;
+    width: 100%;
     min-height: 100vh;
     font-family: 'Montserrat', sans-serif;
     background: linear-gradient(#eee, #e5e5e5);
+}
+
+body::-webkit-scrollbar {
+    display: none;
 }
 
 #root, #app {
@@ -54,8 +58,13 @@ body, html {
     padding-right: 16px;
 }
 
-.header img {
+.header a:first-child {
     height: 56px;
+    padding: 4px 16px;
+}
+
+.header img {
+    height: 48px;
 }
 
 .header .brand {

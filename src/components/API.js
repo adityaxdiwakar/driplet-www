@@ -16,12 +16,12 @@ export const APIContext = React.createContext({
 
 axios.interceptors.response.use(
     response => {
-        console.debug(response.data);
+        //console.debug(response.data);
         return response;
     },
     error => {
         if (!error.response) error.response = {data: {message: "Failed to communcate with Driplet"}};
-        console.debug(error.response.data);
+        //console.debug(error.response.data);
         return Promise.reject(error.response);
     }
 );
@@ -65,6 +65,7 @@ class APIClass extends Component {
             console_trace: "",
 
             register: this.register,
+            request_reset: this.request_reset,
             reset: this.reset,
             login: this.login,
             logout: this.logout,
@@ -80,9 +81,23 @@ class APIClass extends Component {
             bind_websocket: this.bind_websocket,
         };
 
+        this.current_service = null;
+        this.on_ws_ready = null;
+
         this.websocket = new WebSocket(this.WEBSOCKET);
         this.websocket.onmessage = this.wsOnMessage.bind(this);
         this.websocket.onclose = this.wsOnClose.bind(this);
+
+        console.log("             *     ,MMM8&&&.            *\n                  MMMM88&&&&&    .\n                 MMMM88&&&&&&&\n     *           MMM88&&&&&&&&\n                 MMM88&&&&&&&&\n                 'MMM88&&&&&&'\n                   'MMM8&&&'      *    _\n          |\\___/|                      \\\\\n         =) ^Y^ (=   |\\_/|              ||    '\n          \\  ^  /    )a a '._.-\"\"\"\"-.  //\n           )=*=(    =\\T_= /    ~  ~  \\//\n          /     \\     `\"`\\   ~   / ~  /\n          |     |         |~   \\ |  ~/\n         /| | | |\\         \\  ~/- \\ ~\\\n         \\| | |_|/|        || |  // /`\n  jgs_/\\_//_// __//\\_/\\_/\\_((_|\\((_//\\_/\\_/\\_\n  |  |  |  | \\_) |  |  |  |  |  |  |  |  |  |\n  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |")
+
+        console.log('%cWait a second!', 'font-size: 8em; color: #e22; text-shadow: ' +
+            '3px 3px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;');
+        console.log('%cIf you have been told to paste something here, you\'re almost certainly being scammed.',
+            'font-size: 2em; color: #fff;');
+        console.log('%cPasting code into here could give attackers control of your servers.',
+            'font-size: 2em; color: #e22; font-weight: 800;');
+        console.log('%cUnless you know what you\'re doing, close this window.',
+            'font-size: 2em; color: #fff;');
     }
 
     wsOnClose() {
@@ -92,8 +107,17 @@ class APIClass extends Component {
     }
 
     wsOnMessage(e) {
+        let data;
+        if (e.data === 'Authentication was successful.')
+            data = {service_id: this.current_service, content: e.data};
+        else
+            data = JSON.parse(e.data);
+
+        if (data.type === "handshake" && this.on_ws_ready) this.on_ws_ready();
+
+        if (data.service_id && data.service_id !== this.current_service) return;
         this.setState({
-            console_trace: this.state.console_trace + e.data.replace(/\s+$/g, "") + "\n"
+            console_trace: this.state.console_trace + data.content.replace(/\s+$/g, "") + "\n"
         });
     }
 
@@ -155,11 +179,23 @@ class APIClass extends Component {
         }).catch(() => failure(this));
     };
 
-    reset = (data, success, failure) => {
+    request_reset = (data, success, failure) => {
         axios({
             url: this.BASE_URL + this.ENDPOINTS.RESET,
             method: "post",
-            data: {key: data.username, password: data.password}
+            data: {identification: data.username}
+        }).then(response => {
+            success(response.data, this);
+        }).catch(response => {
+            failure(response.data)
+        });
+    };
+
+    reset = (data, success, failure) => {
+        axios({
+            url: this.BASE_URL + this.ENDPOINTS.RESET + "/" + data.client_id + "/" + data.key,
+            method: "post",
+            data: {password: data.password}
         }).then(response => {
             success(response.data, this);
         }).catch(response => {
@@ -320,7 +356,7 @@ class APIClass extends Component {
         });
     };
 
-    bind_websocket = (service_id) => {
+    bind_websocket = (service_id, on_ready) => {
         if (this.websocket.readyState !== this.websocket.OPEN)
             return setTimeout(() => {this.bind_websocket(service_id)}, 500);
         this.websocket.send(JSON.stringify({
@@ -330,7 +366,9 @@ class APIClass extends Component {
             },
             serviceid: service_id
         }));
+        this.current_service = service_id;
         this.setState({console_trace: ""});
+        this.on_ws_ready = on_ready;
     };
 
     // React.JS

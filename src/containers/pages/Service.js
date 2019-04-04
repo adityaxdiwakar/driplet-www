@@ -191,11 +191,12 @@ export default class Service extends Component {
             this.setState({
                 name: data.name,
                 desc: data.description,
-                ready: true,
             })
         }, () => {
         });
-        this.api.bind_websocket(this.service_id);
+        this.api.bind_websocket(this.service_id, () => {
+            this.setState({ready: true})
+        });
     }
 
     registerApi(api) {

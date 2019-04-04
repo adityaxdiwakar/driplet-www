@@ -98,7 +98,8 @@
         }
 
         function onMessage(evt) {
-            document.getElementById('output').innerHTML += evt.data.content + "<br>"
+            console.log(evt.data)
+            document.getElementById('output').innerHTML += JSON.parse(evt.data).content + "<br>"
             stayDown()
         }
 

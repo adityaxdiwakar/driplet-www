@@ -20,6 +20,17 @@
     width: 400px;
 }
 
+.auth-forgot {
+    font-size: .8em;
+    color: #555;
+    float: left;
+    cursor: pointer;
+}
+
+.auth-forgot:hover {
+    text-decoration: underline;
+}
+
 @media only screen and (max-width: 450px) {
     .auth-modal-body input {
         width: auto;

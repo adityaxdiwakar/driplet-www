@@ -4,7 +4,7 @@ import {Switch, Route, Redirect} from "react-router-dom";
 import Dashboard from "../containers/pages/Dashboard";
 import NotFound from "../containers/pages/NotFound";
 import Service from "../containers/pages/Service";
-import {Login} from "../containers/pages/Auth";
+import {Login, Reset} from "../containers/pages/Auth";
 import {APIContext} from "./API";
 
 
@@ -40,6 +40,7 @@ export default () =>
             <Route path="/@me/services/:serviceID" exact render={checkAuth(Service, api)}/>
 
             <Route path="/login" exact component={checkAuth(Login, api, false)}/>
+            <Route path="/reset" exact component={Reset}/>
             <Route path="/logout" exact render={() => <LogoutPage api={api}/>}/>
 
             <Route component={NotFound}/>

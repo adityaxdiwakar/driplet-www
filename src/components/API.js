@@ -17,11 +17,12 @@ export const APIContext = React.createContext({
 axios.interceptors.response.use(
     response => {
         console.debug(response.data);
-        return response
+        return response;
     },
     error => {
+        if (!error.response) error.response = {data: {message: "Failed to communcate with Driplet"}};
         console.debug(error.response.data);
-        return Promise.reject(error.response)
+        return Promise.reject(error.response);
     }
 );
 
@@ -41,6 +42,8 @@ class APIClass extends Component {
         ACCOUNT: "/accounts/%client_id%",
         REGISTER: "/register",
         LOGIN: "/login",
+
+        RESET: "/reset",
 
         SERVICES: "/%client_id%/services",
     };
@@ -62,6 +65,7 @@ class APIClass extends Component {
             console_trace: "",
 
             register: this.register,
+            reset: this.reset,
             login: this.login,
             logout: this.logout,
             list_services: this.list_services,
@@ -149,6 +153,18 @@ class APIClass extends Component {
         }).then(response => {
             success(response.data, this);
         }).catch(() => failure(this));
+    };
+
+    reset = (data, success, failure) => {
+        axios({
+            url: this.BASE_URL + this.ENDPOINTS.RESET,
+            method: "post",
+            data: {key: data.username, password: data.password}
+        }).then(response => {
+            success(response.data, this);
+        }).catch(response => {
+            failure(response.data)
+        });
     };
 
     login = (data, success, failure) => {

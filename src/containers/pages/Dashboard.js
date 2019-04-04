@@ -11,7 +11,7 @@ class ServiceCard extends Component {
         return (
             <div className={"dash-card"}>
                 <div className={"dash-card-icon"} style={{backgroundColor: this.props.color}}>
-                    <i className={"fa-fw fas fa-tint"}/>
+                    <div className={"dash-card-icon-img"}/>
                 </div>
                 <div className={"dash-card-body"}>
                     <div className={"dash-card-name"}>{this.props.name}</div>

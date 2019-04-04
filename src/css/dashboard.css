@@ -55,7 +55,7 @@
 .dash-card-icon {
     width: 128px;
     height: 128px;
-    background-color: #e5e5e5;
+    background-color: #76bbf7;
     flex-shrink: 0;
     color: #fff;
     line-height: 128px;
@@ -64,13 +64,21 @@
     position: relative;
 }
 
-.dash-card-icon img {
+.dash-card-icon img, .dash-card-icon-img {
     position: absolute;
     max-height: 100%;
     max-width: 100%;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+.dash-card-icon-img {
+    background-position: center;
+    background-size: contain;
+    padding: 50px;
+    background-repeat: no-repeat;
+    background-image: url("/driplet.png");
 }
 
 .dash-card-body {

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import ReactDOM from 'react-dom';
 
 import Button from "../../containers/partials/Button";
@@ -106,8 +106,10 @@ export default class Service extends Component {
 
         this.state = {
             ready: false,
+            ready2: false,
             name: "",
             desc: "",
+            go_back: false,
         };
         this.api = null;
         this.service_id = null;
@@ -191,6 +193,7 @@ export default class Service extends Component {
             this.setState({
                 name: data.name,
                 desc: data.description,
+                ready2: true,
             })
         }, () => {
         });
@@ -203,7 +206,41 @@ export default class Service extends Component {
         this.api = api;
     }
 
+    remove(app) {
+        return () => {
+            app.showDialog({
+                title: "Delete service",
+                body: "Are you sure you want to delete '" + this.state.name + "'",
+                prompt: true,
+                confirm: () => {
+                    this.api.delete_service(
+                        this.service_id,
+                        () => {
+                            this.api.list_services(() => {}, () => {});
+                            app.showDialog({
+                                title: "Delete service",
+                                body: "Service '" + this.state.name + "' deleted",
+                                dismissible: true
+                            });
+                            this.setState({go_back: true});
+                        }, () => {
+                            app.showDialog({
+                                title: "Delete service",
+                                body: "Failed to delete service '" + this.state.name + "'",
+                                dismissible: true
+                            });
+                        }
+                    )
+                    app.clearDialog();
+                }
+            });
+        }
+    }
+
     render() {
+        if (this.state.go_back)
+                return <Redirect to={'/'}/>;
+
         return (
             <APIContext.Consumer>{api => <AppContext.Consumer>{app => <AppPage>
                 {this.registerApi(api)}
@@ -211,18 +248,23 @@ export default class Service extends Component {
                     <Sidebar api={api}/>
                     <div className={"service-body"}>
                         {(this.state.name || this.state.desc) ? <>
-                            <div className={"service-name"}>{this.state.name}</div>
+                            <div className={"service-name"}>{this.state.name}
+                                <i className={"far fa-trash-alt service-del"}
+                                   onClick={this.remove(app)}/></div>
                             <div className={"service-desc"}>{this.state.desc}</div>
                             <div className={"hr"}/>
                         </> : null}
-                        <Console ready={this.state.ready} content={api.console_trace}/>
+                        <Console ready={this.state.ready && this.state.ready2} content={api.console_trace}/>
 
                         <div className={"service-controls"}>
-                            <Button wide locked={!this.state.ready} click={this.stopService(app)} col={"red"}
+                            <Button wide locked={!this.state.ready || !this.state.ready2}
+                                    click={this.stopService(app)} col={"red"}
                                     val={"Stop"}/>
-                            <Button wide locked={!this.state.ready} click={this.restartService(app)} col={"orange"}
+                            <Button wide locked={!this.state.ready || !this.state.ready2}
+                                    click={this.restartService(app)} col={"orange"}
                                     val={"Restart"}/>
-                            <Button wide locked={!this.state.ready} click={this.startService(app)} col={"green"}
+                            <Button wide locked={!this.state.ready || !this.state.ready2}
+                                    click={this.startService(app)} col={"green"}
                                     val={"Start"}/>
                         </div>
                     </div>

@@ -60,11 +60,11 @@ body::-webkit-scrollbar {
 
 .header a:first-child {
     height: 56px;
-    padding: 4px 16px;
+    padding: 5px 16px;
 }
 
 .header img {
-    height: 48px;
+    height: 46px;
 }
 
 .header .brand {
@@ -103,6 +103,11 @@ body::-webkit-scrollbar {
     color: #555;
 }
 
+.btn-invert {
+    color: #ccc;
+    border: 1px solid #555;
+}
+
 .btn::before {
     content: "";
     width: 0;
@@ -119,6 +124,10 @@ body::-webkit-scrollbar {
 
 .btn-secondary::before {
     background-color: #ddd;
+}
+
+.btn-invert::before {
+    background-color: #555;
 }
 
 .btn-red {

@@ -72,6 +72,7 @@ class APIClass extends Component {
             list_services: this.list_services,
             create_service: this.create_service,
             service_details: this.service_details,
+            delete_service: this.delete_service,
 
             ensureServices: this.ensureServices,
             start_service: this.start_service,
@@ -312,6 +313,18 @@ class APIClass extends Component {
         axios({
             url: this.BASE_URL + this.ENDPOINTS.SERVICES.replace("%client_id%", this.state.user.client_id) + "/" + service_id,
             method: "get",
+            headers: {authorization: this.state.user.token},
+        }).then(response => {
+            success(response.data, this);
+        }).catch(response => {
+            failure(response.data)
+        });
+    };
+
+    delete_service = (service_id, success, failure) => {
+        axios({
+            url: this.BASE_URL + this.ENDPOINTS.SERVICES.replace("%client_id%", this.state.user.client_id) + "/" + service_id,
+            method: "delete",
             headers: {authorization: this.state.user.token},
         }).then(response => {
             success(response.data, this);

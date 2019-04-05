@@ -26,6 +26,11 @@ class Dialog extends Component {
                             <div className={"overlay-buttons"}>
                                 <Button col={"red"} class={"overlay-btn"} val={"Dismiss"} click={app.clearDialog}/>
                             </div> : null}
+                        {this.props.dialog.prompt ?
+                            <div className={"overlay-buttons"}>
+                                <Button col={"red"} class={"overlay-btn"} val={"Confirm"} click={this.props.dialog.confirm}/>
+                                <Button secondary class={"overlay-btn btn-invert"} val={"Cancel"} click={app.clearDialog}/>
+                            </div> : null}
                     </div>
                 </div>
             )}</AppContext.Consumer>

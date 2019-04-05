@@ -74,3 +74,16 @@
     font-size: 1.5em;
     margin-bottom: 4px;
 }
+
+.service-del {
+    margin-left: 16px;
+    color: #e22;
+    font-size: .7em;
+    opacity: .7;
+    transition: opacity 200ms;
+    cursor: pointer;
+}
+
+.service-del:hover {
+    opacity: 1;
+}

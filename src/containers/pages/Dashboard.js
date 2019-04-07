@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import AppPage from "../../components/AppPage";
 import Button from "../../containers/partials/Button";
 import {APIContext} from "../../components/API";
+import {AppContext} from "../../components/App";
 
 import "../../css/dashboard.css"
 
@@ -29,7 +30,7 @@ class ServiceCard extends Component {
 
 
 class Loading extends Component {
-    render () {
+    render() {
         return (
             <p>Loading</p>
         )
@@ -56,7 +57,8 @@ export default class Dashboard extends Component {
             this.setState({
                 services_ready: true,
             })
-        }, () => {})
+        }, () => {
+        })
     }
 
     genServices() {
@@ -74,15 +76,23 @@ export default class Dashboard extends Component {
 
     render() {
         return (
-            <AppPage><APIContext.Consumer>{api => {this.api = api}}</APIContext.Consumer>
+            <AppPage><APIContext.Consumer>{api => {
+                this.api = api
+            }}</APIContext.Consumer>
                 <div className={"dash-wrap-wrap"}>
                     <div className={"dash-wrap"}>
                         <div className={"dash-head"}>Registered Services</div>
                         <div className={"hr"}/>
                         {this.state.services_ready ?
-                        <div className={"dash-list"}>
-                            {this.genServices()}
-                        </div> : <Loading/>}
+                            <div className={"dash-list"}>
+                                {this.api.services.length !== 0 ?
+                                    this.genServices() : <AppContext.Consumer>{app => (
+                                        <div className={"dash-no-service"}>
+                                            You don't have any services registered. <span
+                                            className={"dash-new-service"} onClick={app.openCreate}>Add one now?</span>
+                                        </div>
+                                    )}</AppContext.Consumer>}
+                            </div> : <Loading/>}
                     </div>
                 </div>
             </AppPage>

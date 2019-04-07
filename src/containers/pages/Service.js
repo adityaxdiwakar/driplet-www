@@ -210,8 +210,9 @@ export default class Service extends Component {
         return () => {
             app.showDialog({
                 title: "Delete service",
-                body: "Are you sure you want to delete '" + this.state.name + "'",
-                prompt: true,
+                bodyPre: "Type \"",
+                bodyPost: "\" to delete the service",
+                typeToConfirm: this.state.name,
                 confirm: () => {
                     this.api.delete_service(
                         this.service_id,
@@ -219,18 +220,18 @@ export default class Service extends Component {
                             this.api.list_services(() => {}, () => {});
                             app.showDialog({
                                 title: "Delete service",
-                                body: "Service '" + this.state.name + "' deleted",
+                                body: "Service \"" + this.state.name + "\" deleted",
                                 dismissible: true
                             });
                             this.setState({go_back: true});
                         }, () => {
                             app.showDialog({
                                 title: "Delete service",
-                                body: "Failed to delete service '" + this.state.name + "'",
+                                body: "Failed to delete service \"" + this.state.name + "\"",
                                 dismissible: true
                             });
                         }
-                    )
+                    );
                     app.clearDialog();
                 }
             });

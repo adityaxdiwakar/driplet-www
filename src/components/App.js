@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 
 import Button from "../containers/partials/Button";
-import Navbar from "../containers/partials/Navbar";
+import NavBar from "../containers/partials/NavBar";
 import {API, APIContext} from "./API";
 import Routes from "./Routes";
 
@@ -15,22 +15,57 @@ export const AppContext = React.createContext({
 
 
 class Dialog extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            confirm: "",
+        };
+    }
+
+    handleChange = (event) => {
+        this.setState({[event.target.name]: event.target.value});
+    };
+
     render() {
         return (
             <AppContext.Consumer>{app => (
                 <div className={"overlay-darken"}>
                     <div className={"overlay-dg"}>
                         <div className={"overlay-title"}>{this.props.dialog.title}</div>
-                        <div className={"overlay-body"}>{this.props.dialog.body}</div>
+                        {this.props.dialog.body ?
+                           <div className={"overlay-body"}>{this.props.dialog.body}</div> : null}
                         {this.props.dialog.dismissible ?
                             <div className={"overlay-buttons"}>
                                 <Button col={"red"} class={"overlay-btn"} val={"Dismiss"} click={app.clearDialog}/>
                             </div> : null}
                         {this.props.dialog.prompt ?
                             <div className={"overlay-buttons"}>
-                                <Button col={"red"} class={"overlay-btn"} val={"Confirm"} click={this.props.dialog.confirm}/>
-                                <Button secondary class={"overlay-btn btn-invert"} val={"Cancel"} click={app.clearDialog}/>
+                                <Button col={"red"} class={"overlay-btn"} val={"Confirm"}
+                                        click={this.props.dialog.confirm}/>
+                                <Button secondary class={"overlay-btn btn-invert"} val={"Cancel"}
+                                        click={app.clearDialog}/>
                             </div> : null}
+                        {this.props.dialog.typeToConfirm ?
+                            <>
+                                <div className={"overlay-body"}>
+                                    {this.props.dialog.bodyPre}
+                                    <b>{this.props.dialog.typeToConfirm}</b>
+                                    {this.props.dialog.bodyPost}
+                                </div>
+
+                                <div className={"input-wrap input-invert"}><input name={"confirm"} type={"text"}
+                                                                                  value={this.state.confirm}
+                                                                                  placeholder={""}
+                                                                                  onChange={this.handleChange}/></div>
+                                <div className={"overlay-buttons"}>
+                                    <Button col={"red"} class={"overlay-btn"} val={"Confirm"}
+                                            click={this.props.dialog.confirm}
+                                            locked={this.state.confirm !== this.props.dialog.typeToConfirm}/>
+                                    <Button secondary class={"overlay-btn btn-invert"} val={"Cancel"}
+                                            click={app.clearDialog}/>
+                                </div>
+                            </> : null}
                     </div>
                 </div>
             )}</AppContext.Consumer>
@@ -76,13 +111,16 @@ class CreateOverlay extends Component {
         return () => {
             api.create_service(this.state, () => {
                     app.closeCreate();
-                    app.showDialog({title: "Create service",
-                        body: "Service added", dismissible: true})
+                    app.showDialog({
+                        title: "Create service",
+                        body: "Service added", dismissible: true
+                    })
                 }, () => {
                     app.showDialog({
                         title: "Create service",
                         body: "Something went wrong creating your service",
-                        dismissible: true})
+                        dismissible: true
+                    })
                 }
             )
         }
@@ -149,13 +187,13 @@ class Loading extends Component {
     render() {
         return (
             <div id="app">
-                <Navbar/>
-            <div className={"loading-wrap"}>
-                <div className={"loading-body"}>
-                    Welcome back to driplet
+                <NavBar/>
+                <div className={"loading-wrap"}>
+                    <div className={"loading-body"}>
+                        Welcome back to driplet
+                    </div>
                 </div>
             </div>
-                </div>
         )
     }
 }
@@ -192,7 +230,7 @@ export default class App extends Component {
                 api.ready ?
                     <AppContext.Provider value={this.funcs}>
                         <div id="app">
-                            <Navbar/>
+                            <NavBar/>
                             <Routes/>
                             {this.state.dialog ? <Dialog dialog={this.state.dialog}/> : null}
                             {this.state.create ? <CreateOverlay/> : null}

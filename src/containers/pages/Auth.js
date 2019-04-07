@@ -52,7 +52,7 @@ export class Reset extends Component {
                 key: this.state.key,
                 password: this.state.password,
                 client_id: this.state.client_id,
-            }, (data) => {
+            }, () => {
                 this.setState({
                     redirect: true
                 });
@@ -64,6 +64,14 @@ export class Reset extends Component {
             })
         }
     }
+
+    keyPress = (api) => {
+        return (e) => {
+            if (e.key === 'Enter') {
+                this.reset(api)();
+            }
+        };
+    };
 
     render() {
         if (!this.state.key || !this.state.client_id || this.state.redirect) return <Redirect to={"/login"}/>;
@@ -79,7 +87,8 @@ export class Reset extends Component {
                                                                  value={this.state.password}
                                                                  autoComplete={"newpassword"}
                                                                  onChange={this.handleChange} placeholder={"Password"}
-                                                                 disabled={this.state.lock}/></div>
+                                                                 disabled={this.state.lock}
+                                                                 onKeyPress={this.keyPress(api)}/></div>
 
                             <label>Repeat Password</label>
                             <div className={"input-wrap"}><input name={"password2"} type={"password"}
@@ -87,7 +96,8 @@ export class Reset extends Component {
                                                                  autoComplete={"newpassword"}
                                                                  onChange={this.handleChange}
                                                                  placeholder={"Repeat Password"}
-                                                                 disabled={this.state.lock}/></div>
+                                                                 disabled={this.state.lock}
+                                                                 onKeyPress={this.keyPress(api)}/></div>
 
                             <div className={"auth-error"}>{this.state.error}</div>
 
@@ -128,7 +138,18 @@ export class Login extends Component {
 
     showForgot = () => {
         this.setState({forgot: true});
-    }
+    };
+
+    keyPress = (api) => {
+        return (e) => {
+            if (e.key === 'Enter') {
+                if (this.state.register)
+                    this.register(api)();
+                else
+                    this.login(api)();
+            }
+        };
+    };
 
     validate() {
         if (this.state.register) {
@@ -201,9 +222,9 @@ export class Login extends Component {
 
             api.request_reset({
                 username: this.state.username,
-            }, (data) => {
-                let message = "If this account exists, you will have been sent an email to the address linked to you account.\n"
-                message += "Please follow the instructions in there to continue the password reset.\n\n";
+            }, () => {
+                let message = "If this account exists, you will have been sent an email to the address linked to your";
+                message += "account.\nPlease follow the instructions in there to continue the password reset.\n\n";
                 message += "(Make sure to check your spam folder)";
                 app.showDialog({title: "Password reset", body: message, dismissible: true});
             }, (data) => {
@@ -228,21 +249,24 @@ export class Login extends Component {
                                                                      autoComplete={"username"}
                                                                      onChange={this.handleChange}
                                                                      placeholder={"Username or Email"}
-                                                                     disabled={this.state.lock}/></div>
+                                                                     disabled={this.state.lock}
+                                                                     onKeyPress={this.keyPress(api)}/></div>
                             </> : <>
                                 <label>Username</label>
                                 <div className={"input-wrap"}><input name={"username"} type={"text"}
                                                                      value={this.state.username}
                                                                      autoComplete={"username"}
                                                                      onChange={this.handleChange} placeholder={"Username"}
-                                                                     disabled={this.state.lock}/></div>
+                                                                     disabled={this.state.lock}
+                                                                     onKeyPress={this.keyPress(api)}/></div>
                                 <label>Password</label>
                                 <div className={"input-wrap"}><input name={"password"} type={"password"}
                                                                      value={this.state.password}
                                                                      autoComplete={this.state.register ?
                                                                         "newpassword" : "current-password"}
                                                                      onChange={this.handleChange} placeholder={"Password"}
-                                                                     disabled={this.state.lock}/></div>
+                                                                     disabled={this.state.lock}
+                                                                     onKeyPress={this.keyPress(api)}/></div>
 
                                 {this.state.register ? <>
                                     <label>Repeat Password</label>
@@ -251,12 +275,14 @@ export class Login extends Component {
                                                                          autoComplete={"newpassword"}
                                                                          onChange={this.handleChange}
                                                                          placeholder={"Repeat Password"}
-                                                                         disabled={this.state.lock}/></div>
+                                                                         disabled={this.state.lock}
+                                                                         onKeyPress={this.keyPress(api)}/></div>
                                     <label>Email</label>
                                     <div className={"input-wrap"}><input name={"email"} type={"email"}
                                                                          value={this.state.email}
                                                                          onChange={this.handleChange} placeholder={"Email"}
-                                                                         disabled={this.state.lock}/></div>
+                                                                         disabled={this.state.lock}
+                                                                         onKeyPress={this.keyPress(api)}/></div>
                                 </> : null}
                             </>}
 

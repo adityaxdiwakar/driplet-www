@@ -58,7 +58,7 @@ body::-webkit-scrollbar {
     padding-right: 16px;
 }
 
-.header a:first-child {
+.header>a:first-child {
     height: 56px;
     padding: 5px 16px;
 }
@@ -70,6 +70,41 @@ body::-webkit-scrollbar {
 .header .brand {
     font-size: 1.4em;
     font-weight: 600;
+}
+
+.nav-dd-head {
+    cursor: pointer;
+    user-select: none;
+}
+
+.nav-dd-blackout {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    z-index: 45;
+    cursor: default;
+}
+
+.nav-dd-body {
+    position: absolute;
+    top: 100%;
+    right: 8px;
+    background-color: #292929;
+    padding: 8px 0;
+    z-index: 50;
+}
+
+.nav-dd-i {
+    padding: 8px 16px;
+    min-width: 200px;
+    user-select: none;
+}
+
+.nav-dd-i:hover {
+    background-color: #333;
 }
 
 /* WIDGETS */
@@ -200,13 +235,29 @@ input {
     outline: none;
 }
 
+.input-invert>input {
+    border-bottom: 1px solid #444;
+    background-color: #1b1b1b;
+    color: #bbb;
+    padding: 5px 8px;
+    font-size: 1em;
+}
+
 ::placeholder {
     color: #bbb;
+}
+
+.input-invert ::placeholder {
+    color: #777;
 }
 
 .input-wrap {
     position: relative;
     margin: 8px 0 24px;
+}
+
+.input-invert {
+    margin: 12px 0 0;
 }
 
 .input-wrap::after {
@@ -256,15 +307,21 @@ input:-webkit-autofill {
     background-color: #222;
     color: #fff;
     position: relative;
+
+    margin: 0 128px;
 }
 
 @media only screen and (max-width: 800px) {
     .dash-wrap {
         margin: 16px 8px;
     }
+
+    .overlay-dg {
+        margin: 0;
+    }
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 550px) {
     .overlay-dg {
         width: 100vw;
         min-width: auto;
@@ -311,6 +368,7 @@ input:-webkit-autofill {
 .overlay-body {
     white-space: pre-line;
     line-height: 1.4;
+    word-break: break-all;
 }
 
 .create-head {

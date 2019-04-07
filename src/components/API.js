@@ -1,5 +1,6 @@
 import {withRouter} from "react-router-dom";
 import React, {Component} from "react";
+import Cookies from "universal-cookie";
 import axios from "axios";
 
 
@@ -50,6 +51,17 @@ class APIClass extends Component {
 
     constructor(props) {
         super(props);
+
+        const cookies = new Cookies();
+        let api = cookies.get('api');
+        let webSock = cookies.get('ws');
+        if (api) {
+            this.BASE_URL = api + "/endpoints";
+            this.DOMAIN = api;
+        }
+        if (webSock) {
+            this.WEBSOCKET = webSock;
+        }
 
         this.state = {
             ready: false,

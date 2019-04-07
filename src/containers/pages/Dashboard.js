@@ -85,7 +85,7 @@ export default class Dashboard extends Component {
                         <div className={"hr"}/>
                         {this.state.services_ready ?
                             <div className={"dash-list"}>
-                                {this.api.services.length !== 0 ?
+                                {Object.keys(this.api.services).length !== 0 ?
                                     this.genServices() : <AppContext.Consumer>{app => (
                                         <div className={"dash-no-service"}>
                                             You don't have any services registered. <span

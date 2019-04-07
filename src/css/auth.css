@@ -23,8 +23,8 @@
 .auth-forgot {
     font-size: .8em;
     color: #555;
-    float: left;
     cursor: pointer;
+    margin-bottom: 8px;
 }
 
 .auth-forgot:hover {
@@ -35,14 +35,20 @@
     color: #e22;
     font-size: .9em;
     margin-bottom: 4px;
+    margin-top: -16px;
 }
 
 @media only screen and (max-width: 450px) {
     .auth-modal-body input {
-        width: auto;
+        width: 100%;
     }
 
     .auth-modal {
         width: 100vw;
+    }
+
+    .auth-modal-body {
+        padding: 32px;
+        width: 100%;
     }
 }
